@@ -24,13 +24,17 @@ def index():
 
 @app.route('/trans', methods=['POST'])
 def trans():
-    # Extract form data
     text = request.form['text']
     target_lang = request.form['target_lang']
     
     # Detect language and translate
     detected_lang, translation = detect_and_translate(text, target_lang)
 
+    # Handle potential errors
+    if detected_lang is None:
+        error = "Could not detect language or translate the text."
+        return render_template('index.html', error=error, languages=LANGUAGES)
+    
     # Render the results
     return render_template('index.html', translation=translation, detected_lang=detected_lang, languages=LANGUAGES)
 
